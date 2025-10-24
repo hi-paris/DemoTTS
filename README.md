@@ -32,7 +32,7 @@ npx http-server -p 8000
 - Optional: enable the lazy-loading behavior in `script.js` by uncommenting the audio lazy-load observer lines.
 
 ## Authors & Contact
-Maintained by Hi! PARIS, Tim Luka Horstmann — tim.horstmann@ip-paris.fr
+Maintained by Hi! PARIS, Nassima ould ouali — nassima.ould-ouali@polytechnique.edu
 
 If you find issues or want to contribute improvements (content fixes, accessibility tweaks, better examples), please open a PR or an issue.
 
@@ -46,4 +46,4 @@ If you use this demo in a publication, please mention the demo in your acknowled
 
 ---
 
-Last updated: August 20, 2025
+Last updated: October 24, 2025
