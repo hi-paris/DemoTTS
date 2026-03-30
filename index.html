@@ -1,345 +1,432 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Improving French Synthetic Speech Quality via SSML Prosody Control - Demo</title>
-    <link rel="stylesheet" href="style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Improving French Synthetic Speech Quality via SSML Prosody Control</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@400;500&family=Syne:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+<style>
+:root{
+  --navy:#0B1929;--nm:#112240;--ns:#1a3055;
+  --a:#4FC3F7;--a2:#81C784;--a3:#FFB74D;--a4:#CF6679;
+  --t:#E8EDF2;--tm:#7A8FA6;--td:#4A5D72;
+  --bs:rgba(255,255,255,0.06);--card:rgba(17,34,64,0.85);
+  --sf:'DM Serif Display',Georgia,serif;
+  --ss:'Syne',sans-serif;--mo:'DM Mono',monospace;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{background:var(--navy);color:var(--t);font-family:var(--ss);font-size:16px;line-height:1.7;overflow-x:hidden}
+::selection{background:rgba(79,195,247,0.25)}
+body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(rgba(79,195,247,0.025) 1px,transparent 1px),linear-gradient(90deg,rgba(79,195,247,0.025) 1px,transparent 1px);background-size:64px 64px;pointer-events:none;z-index:0}
+
+nav{position:fixed;top:0;left:0;right:0;z-index:100;height:60px;padding:0 48px;display:flex;align-items:center;justify-content:space-between;background:rgba(11,25,41,0.92);backdrop-filter:blur(14px);border-bottom:1px solid var(--bs)}
+.logo{font-family:var(--mo);font-size:13px;color:var(--a);letter-spacing:.08em;text-transform:uppercase}
+.nav-links-list{display:flex;gap:32px;list-style:none}
+.nav-links-list a{text-decoration:none;color:var(--tm);font-size:12px;font-weight:500;letter-spacing:.06em;text-transform:uppercase;transition:color .2s}
+.nav-links-list a:hover{color:var(--a)}
+.nav-pill{font-family:var(--mo);font-size:11px;background:rgba(79,195,247,0.1);color:var(--a);border:1px solid rgba(79,195,247,0.3);padding:4px 12px;border-radius:3px;letter-spacing:.07em}
+
+.div{width:100%;height:1px;background:linear-gradient(90deg,transparent,rgba(79,195,247,.12),transparent);z-index:1;position:relative}
+
+.sec{position:relative;z-index:1;padding:96px 48px;max-width:1200px;margin:0 auto}
+.stag{font-family:var(--mo);font-size:11px;color:var(--a);letter-spacing:.12em;text-transform:uppercase;margin-bottom:14px;display:flex;align-items:center;gap:10px}
+.stag::after{content:'';flex:1;max-width:40px;height:1px;background:var(--a);opacity:.4}
+.sec h2{font-family:var(--sf);font-size:clamp(30px,3.8vw,50px);line-height:1.08;margin-bottom:10px;color:var(--t)}
+.sec h2 em{font-style:italic;color:var(--a)}
+.sec-intro{font-size:16px;color:var(--tm);max-width:700px;margin-bottom:48px;line-height:1.75}
+
+.hero{position:relative;min-height:100vh;display:flex;align-items:center;padding:110px 48px 72px;z-index:1;overflow:hidden}
+.hero-inner{max-width:700px}
+.htag{display:inline-flex;align-items:center;gap:8px;font-family:var(--mo);font-size:11px;color:var(--a);letter-spacing:.12em;text-transform:uppercase;margin-bottom:28px}
+.htag::before{content:'';width:22px;height:1px;background:var(--a)}
+.hero h1{font-family:var(--sf);font-size:clamp(36px,5vw,72px);line-height:1.05;margin-bottom:6px}
+.hero h1 em{font-style:italic;color:var(--a)}
+.hero-italic{font-family:var(--sf);font-style:italic;font-size:clamp(15px,1.8vw,20px);color:var(--tm);margin-top:4px}
+.hero-sub{font-size:15px;color:var(--tm);max-width:580px;margin:22px 0 36px;line-height:1.75}
+.hero-badges{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:36px}
+.hbadge{font-family:var(--mo);font-size:11px;padding:5px 14px;border-radius:3px;letter-spacing:.06em;border:1px solid rgba(79,195,247,.3);background:rgba(79,195,247,.08);color:var(--a);text-decoration:none;display:inline-flex;align-items:center;gap:7px;transition:all .2s}
+.hbadge:hover{background:rgba(79,195,247,.15);border-color:rgba(79,195,247,.5)}
+.hbadge.hf{border-color:rgba(255,183,77,.3);background:rgba(255,183,77,.08);color:var(--a3)}
+.hbadge.hf:hover{background:rgba(255,183,77,.15);border-color:rgba(255,183,77,.5)}
+.hbadge.colab{border-color:rgba(255,183,77,.3);background:rgba(255,183,77,.08);color:var(--a3)}
+.hero-stats{display:flex;gap:36px;flex-wrap:wrap}
+.stat-val{font-family:var(--sf);font-size:34px;color:var(--t);line-height:1}
+.stat-val span{color:var(--a)}
+.stat-lbl{font-family:var(--mo);font-size:10px;color:var(--td);letter-spacing:.08em;text-transform:uppercase;margin-top:3px}
+
+.card{background:var(--card);border:1px solid var(--bs);border-radius:12px;backdrop-filter:blur(8px)}
+.chip{font-family:var(--mo);font-size:10px;padding:3px 8px;border-radius:3px;letter-spacing:.06em;border:1px solid var(--bs);background:rgba(255,255,255,.04);color:var(--td)}
+.chip.b{background:rgba(79,195,247,.08);color:var(--a);border-color:rgba(79,195,247,.2)}
+.chip.g{background:rgba(129,199,132,.08);color:var(--a2);border-color:rgba(129,199,132,.2)}
+.chip.o{background:rgba(255,183,77,.08);color:var(--a3);border-color:rgba(255,183,77,.2)}
+.chips{display:flex;flex-wrap:wrap;gap:5px;margin-top:10px}
+
+.overview-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+.ov-card{background:var(--card);border:1px solid var(--bs);border-radius:12px;padding:28px 24px;position:relative;overflow:hidden;transition:border-color .2s,transform .2s}
+.ov-card:hover{border-color:rgba(79,195,247,.22);transform:translateY(-2px)}
+.ov-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--a),transparent)}
+.ov-card:nth-child(2)::before{background:linear-gradient(90deg,var(--a2),transparent)}
+.ov-card:nth-child(3)::before{background:linear-gradient(90deg,var(--a3),transparent)}
+.ov-ico{width:40px;height:40px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px;margin-bottom:16px;background:rgba(79,195,247,.1);color:var(--a);border:1px solid rgba(79,195,247,.2)}
+.ov-card:nth-child(2) .ov-ico{background:rgba(129,199,132,.1);color:var(--a2);border-color:rgba(129,199,132,.2)}
+.ov-card:nth-child(3) .ov-ico{background:rgba(255,183,77,.1);color:var(--a3);border-color:rgba(255,183,77,.2)}
+.ov-card h3{font-size:15px;font-weight:700;color:var(--t);margin-bottom:8px}
+.ov-card p{font-size:13px;color:var(--tm);line-height:1.65}
+
+.arch-wrap{display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:start;margin-bottom:52px}
+.arch-desc h3{font-family:var(--sf);font-size:22px;color:var(--t);margin-bottom:12px}
+.pipeline-intro{font-size:14px;color:var(--tm);margin-bottom:16px;line-height:1.7}
+.pipeline-steps{list-style:none;display:flex;flex-direction:column;gap:12px}
+.pipeline-steps li{display:flex;gap:14px;font-size:13px;color:var(--tm);line-height:1.6;position:relative;padding-bottom:12px;border-bottom:1px solid var(--bs)}
+.pipeline-steps li:last-child{border-bottom:none;padding-bottom:0}
+.pipeline-steps li strong{color:var(--t)}
+.step-num{font-family:var(--mo);font-size:10px;min-width:22px;height:22px;border-radius:4px;background:rgba(79,195,247,.1);color:var(--a);border:1px solid rgba(79,195,247,.25);display:flex;align-items:center;justify-content:center;margin-top:2px;flex-shrink:0}
+.arch-img-box{background:rgba(8,18,34,.5);border:1px solid var(--bs);border-radius:12px;overflow:hidden;display:flex;align-items:center;justify-content:center;padding:20px}
+.arch-img-box img{width:100%;border-radius:6px;display:block}
+.arch-img-placeholder{width:100%;aspect-ratio:4/3;background:rgba(79,195,247,.03);border-radius:8px;display:flex;align-items:center;justify-content:center;border:1px dashed rgba(79,195,247,.1)}
+.arch-img-placeholder span{font-family:var(--mo);font-size:11px;color:var(--td)}
+
+.train-wrap{display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:start}
+.train-wrap h3{font-family:var(--sf);font-size:20px;color:var(--t);margin-bottom:12px}
+.train-steps{display:flex;flex-direction:column;gap:8px}
+.train-steps li{font-size:13px;color:var(--tm);line-height:1.65;padding-left:14px;position:relative}
+.train-steps li::before{content:'—';position:absolute;left:0;color:var(--a);opacity:.5}
+
+.demo-pair{background:var(--card);border:1px solid var(--bs);border-radius:14px;overflow:hidden;margin-bottom:24px;transition:border-color .2s}
+.demo-pair:hover{border-color:rgba(79,195,247,.14)}
+.demo-hdr{padding:18px 24px 16px;border-bottom:1px solid var(--bs);display:flex;align-items:flex-start;gap:20px}
+.demo-num{font-family:var(--mo);font-size:11px;background:rgba(79,195,247,.1);color:var(--a);border:1px solid rgba(79,195,247,.25);padding:4px 10px;border-radius:3px;letter-spacing:.06em;white-space:nowrap;flex-shrink:0;margin-top:3px}
+.demo-text{font-size:13px;color:var(--tm);font-style:italic;line-height:1.65;flex:1}
+
+.ssml-comp{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--bs);border-bottom:1px solid var(--bs)}
+.ssml-col{padding:18px 22px;background:var(--nm)}
+.ssml-col:first-child{background:rgba(10,22,40,.8)}
+.ssml-label{font-family:var(--mo);font-size:10px;letter-spacing:.1em;text-transform:uppercase;margin-bottom:10px;display:flex;align-items:center;gap:7px}
+.ssml-label.base{color:var(--td)}
+.ssml-label.enhanced{color:var(--a2)}
+.ssml-code{font-family:var(--mo);font-size:10.5px;color:var(--td);line-height:1.55;word-break:break-all;white-space:pre-wrap;max-height:120px;overflow-y:auto;scrollbar-width:thin;scrollbar-color:var(--td) transparent}
+.ssml-code::-webkit-scrollbar{width:3px}
+.ssml-code::-webkit-scrollbar-thumb{background:var(--td);border-radius:2px}
+.ssml-note{font-family:var(--mo);font-size:9px;color:var(--td);margin-top:8px;letter-spacing:.04em}
+
+.audio-comp{display:grid;grid-template-columns:1fr 1fr}
+.audio-col{padding:16px 22px;display:flex;flex-direction:column;gap:8px}
+.audio-col:first-child{border-right:1px solid var(--bs)}
+.audio-label{font-family:var(--mo);font-size:10px;letter-spacing:.1em;text-transform:uppercase;display:flex;align-items:center;gap:7px}
+.audio-label.base{color:var(--td)}
+.audio-label.enhanced{color:var(--a2)}
+.audio-dot{width:6px;height:6px;border-radius:50%;background:currentColor;flex-shrink:0}
+audio{width:100%;height:32px;outline:none;border-radius:4px}
+.audio-note{font-size:11px;color:var(--td)}
+
+.tech-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:36px}
+.tc{background:var(--card);border:1px solid var(--bs);border-radius:10px;padding:22px;transition:border-color .2s}
+.tc:hover{border-color:rgba(79,195,247,.18)}
+.tc-tag{font-family:var(--mo);font-size:9px;color:var(--a);margin-bottom:8px;letter-spacing:.1em;text-transform:uppercase}
+.tc h4{font-size:14px;font-weight:700;color:var(--t);margin-bottom:6px}
+.tc p{font-size:12px;color:var(--tm);line-height:1.6}
+
+footer{position:relative;z-index:1;border-top:1px solid var(--bs);padding:44px 48px;display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:24px}
+.fl h3{font-family:var(--sf);font-size:20px;margin-bottom:6px}
+.fl p{font-size:12px;color:var(--tm);line-height:1.7}
+.fl a{color:var(--a);text-decoration:none}
+.fl a:hover{text-decoration:underline}
+.fl sup{font-size:.65em}
+.fbadges{display:flex;gap:7px;flex-wrap:wrap;align-items:flex-start}
+.fb{font-family:var(--mo);font-size:10px;letter-spacing:.07em;text-transform:uppercase;padding:4px 9px;border-radius:3px;border:1px solid var(--bs);color:var(--td)}
+.footer-links{display:flex;gap:14px;flex-wrap:wrap}
+.footer-links a{font-family:var(--mo);font-size:11px;color:var(--td);text-decoration:none;display:flex;align-items:center;gap:6px;transition:color .2s}
+.footer-links a:hover{color:var(--a)}
+
+.fp-iframe{width:100%;height:320px;border:1px solid var(--bs);border-radius:10px;background:rgba(255,255,255,.02);margin-top:20px;display:block}
+
+@keyframes fadeUp{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
+.fu{animation:fadeUp .65s ease both}
+.fd1{animation-delay:.08s}.fd2{animation-delay:.18s}.fd3{animation-delay:.3s}
+
+@media(max-width:860px){
+  nav{padding:0 20px}.nav-links-list{display:none}
+  .hero,.sec{padding-left:20px;padding-right:20px}
+  .overview-grid,.arch-wrap,.train-wrap,.ssml-comp,.audio-comp,.tech-grid{grid-template-columns:1fr}
+  .ssml-comp{gap:8px;background:transparent}
+  footer{padding:32px 20px}
+}
+</style>
 </head>
 <body>
-    <!-- Header -->
-    <header class="header">
-        <div class="container">
-            <div class="header-content">
-                <h1 class="title">Improving French Synthetic Speech Quality via SSML Prosody Control</h1>
-                <p class="subtitle">An End-to-End Pipeline for Enhanced French Text-to-Speech with SSML Prosody Control</p>
-                <div class="paper-info">
-                    <span class="conference">ICNLSP 2025</span>
-                    <a href="https://arxiv.org/abs/2508.17494v1" class="paper-link" target="_blank">
-                        <i class="fas fa-file-pdf"></i> See paper on ArXiv
-                    </a>
-                </div>
 
-                <!-- Resource Links -->
-                <div class="resource-links">
-                    <div class="resource-category">
-                        <h3><i class="fas fa-code-branch"></i> Code & Resources</h3>
-                        <div class="resource-grid">
-                            <a href="https://github.com/hi-paris/Prosody-Control-French-TTS/tree/main" class="resource-link primary" target="_blank">
-                                <i class="fab fa-github"></i>
-                                Main Repository
-                            </a>
-                            <a href="https://github.com/hi-paris/cascading_model" class="resource-link" target="_blank">
-                                <i class="fab fa-github"></i>
-                                Inference Code
-                            </a>
-                            <a href="https://colab.research.google.com/drive/1K3bcLHRfbSy9syWRZR6D0hyTb5lqivGi" class="resource-link colab" target="_blank">
-                                <i class="fab fa-google"></i>
-                                Colab Demo
-                            </a>
-                        </div>
-                    </div>
-                    
-                    <div class="resource-category">
-                        <h3><i class="fas fa-brain"></i> Pre-trained Models</h3>
-                        <div class="resource-grid">
-                            <a href="https://huggingface.co/hi-paris/ssml-text2breaks-fr-lora" class="resource-link hf-model" target="_blank">
-                                <img class="hf-logo" src="https://huggingface.co/front/assets/huggingface_logo.svg" alt="Hugging Face" width="18" height="18" loading="lazy" />
-                                Break Prediction <span style="font-size: 0.8rem;">("Qwen A")</span>
-                            </a>
-                            <a href="https://huggingface.co/hi-paris/ssml-breaks2ssml-fr-lora" class="resource-link hf-model" target="_blank">
-                                <img class="hf-logo" src="https://huggingface.co/front/assets/huggingface_logo.svg" alt="Hugging Face" width="18" height="18" loading="lazy" />
-                                Prosody Prediction <span style="font-size: 0.8rem;">("Qwen B")</span>
-                            </a>
-                        </div>
-                    </div>
-                    <iframe allowfullscreen="allowfullscreen"
-                        allow="clipboard-write"
-                        scrolling="no"
-                        class="fp-iframe"
-                        src="https://heyzine.com/flip-book/8b56d564fe.html">
-                    </iframe>
-                </div>
-            </div>
-        </div>
-    </header>
+<nav>
+  <div class="logo">SSML Prosody · French TTS</div>
+  <ul class="nav-links-list">
+    <li><a href="#overview">Overview</a></li>
+    <li><a href="#architecture">Architecture</a></li>
+    <li><a href="#demo">Demo</a></li>
+  </ul>
+  <div class="nav-pill">ICNLSP 2025 · Accepted</div>
+</nav>
 
-    <!-- Navigation -->
-    <nav class="nav">
-        <div class="container">
-            <ul class="nav-links">
-                <li><a href="#overview" class="nav-link active">Overview</a></li>
-                <li><a href="#architecture" class="nav-link">Architecture</a></li>
-                <li><a href="#demo" class="nav-link">Audio Demo</a></li>
-            </ul>
-        </div>
-    </nav>
+<div class="hero">
+  <div class="hero-inner">
+    <div class="htag fu">French TTS · SSML · QLoRA · Qwen-2.5-7B</div>
+    <h1 class="fu fd1">Improving French<br><em>Synthetic Speech</em></h1>
+    <p class="hero-italic fu fd1">via SSML Prosody Control — An End-to-End Pipeline</p>
+    <p class="hero-sub fu fd2">First end-to-end pipeline using cascaded QLoRA-fine-tuned Qwen-2.5-7B models to insert SSML tags for controlling pitch, rate, volume, and pauses in French text — achieving significant naturalness improvements over commercial TTS baselines.</p>
+    <div class="hero-badges fu fd2">
+      <a class="hbadge" href="https://arxiv.org/abs/2508.17494v1" target="_blank"><i class="fas fa-file-pdf"></i> ArXiv Paper</a>
+      <a class="hbadge" href="https://github.com/hi-paris/Prosody-Control-French-TTS/tree/main" target="_blank"><i class="fab fa-github"></i> Main Repo</a>
+      <a class="hbadge" href="https://github.com/hi-paris/cascading_model" target="_blank"><i class="fab fa-github"></i> Inference Code</a>
+      <a class="hbadge colab" href="https://colab.research.google.com/drive/1K3bcLHRfbSy9syWRZR6D0hyTb5lqivGi" target="_blank"><i class="fab fa-google"></i> Colab Demo</a>
+      <a class="hbadge hf" href="https://huggingface.co/hi-paris/ssml-text2breaks-fr-lora" target="_blank">🤗 Break Prediction</a>
+      <a class="hbadge hf" href="https://huggingface.co/hi-paris/ssml-breaks2ssml-fr-lora" target="_blank">🤗 Prosody Prediction</a>
+    </div>
+    <div class="hero-stats fu fd3">
+      <div><div class="stat-val">3.<span>87</span></div><div class="stat-lbl">MOS (ours)</div></div>
+      <div><div class="stat-val">+<span>20.9</span>%</div><div class="stat-lbl">MOS improvement</div></div>
+      <div><div class="stat-val">99.<span>2</span>%</div><div class="stat-lbl">Break pred. F1</div></div>
+      <div><div class="stat-val"><span>15</span>/18</div><div class="stat-lbl">Listeners prefer</div></div>
+    </div>
+  </div>
+  <div style="position:absolute;right:-10px;top:0;bottom:0;width:42%;opacity:.22;pointer-events:none">
+    <svg width="100%" height="100%" viewBox="0 0 440 600" xmlns="http://www.w3.org/2000/svg">
+      <defs><linearGradient id="wg2" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#4FC3F7" stop-opacity="1"/><stop offset="100%" stop-color="#4FC3F7" stop-opacity="0"/></linearGradient></defs>
+      <polyline points="0,300 20,268 40,322 60,252 80,288 100,232 120,310 140,248 160,300 180,224 200,272 220,192 240,264 260,204 280,288 300,212 320,272 340,232 360,296 380,252 400,284 420,240 440,302" fill="none" stroke="url(#wg2)" stroke-width="2"/>
+      <polyline points="0,310 20,336 40,288 60,342 80,312 100,362 120,288 140,352 160,302 180,372 200,322 220,402 240,332 260,392 280,308 300,382 320,322 340,362 360,298 380,342 400,306 420,346 440,296" fill="none" stroke="url(#wg2)" stroke-width="1.5" opacity=".35"/>
+      <circle cx="220" cy="192" r="4" fill="#4FC3F7" opacity=".9"/>
+      <circle cx="100" cy="232" r="3" fill="#4FC3F7" opacity=".6"/>
+      <circle cx="300" cy="212" r="4" fill="#81C784" opacity=".8"/>
+      <circle cx="180" cy="224" r="3" fill="#FFB74D" opacity=".6"/>
+    </svg>
+  </div>
+</div>
 
-    <!-- Main Content -->
-    <main class="main">
-        <div class="container">
-            <!-- Overview Section -->
-            <section id="overview" class="section">
-                <h2 class="section-title">Research Overview</h2>
-                <div class="overview-grid">
-                    <div class="overview-card">
-                        <div class="card-icon">
-                            <i class="fas fa-microphone-alt"></i>
-                        </div>
-                        <h3>Problem</h3>
-                        <p>French synthetic voices often lack expressiveness due to limited prosody control in commercial TTS systems, resulting in monotonic speech.</p>
-                    </div>
-                    <div class="overview-card">
-                        <div class="card-icon">
-                            <i class="fas fa-brain"></i>
-                        </div>
-                        <h3>Solution</h3>
-                        <p>First end-to-end pipeline using cascaded QLoRA-fine-tuned Qwen-2.5-7B models to insert SSML tags for controlling pitch, rate, volume, and pauses in French text.</p>
-                    </div>
-                    <div class="overview-card">
-                        <div class="card-icon">
-                            <i class="fas fa-chart-line"></i>
-                        </div>
-                        <h3>Results</h3>
-                        <p>Significant improvement in naturalness with MOS scores increasing from 3.20 to 3.87 (p<0.005) and 15 of 18 listeners preferring our enhanced synthesis.</p>
-                    </div>
-                </div>
-            </section>
+<div class="div"></div>
 
-            <!-- Architecture Section -->
-            <section id="architecture" class="section">
-                <h2 class="section-title">Model Architecture</h2>
-                
-                <!-- Inference Pipeline (Main Demo Flow) -->
-                <div class="architecture-container">
-                    <div class="architecture-description">
-                        <h3>Inference Pipeline</h3>
-                        <p class="pipeline-intro">During inference, our system transforms raw French text into expressive speech through a cascaded approach:</p>
-                        <ol class="pipeline-steps">
-                            <li><strong>Text Input:</strong> Raw French text is processed for linguistic analysis</li>
-                            <li><strong>Break Prediction:</strong> First QLoRA-tuned Qwen-2.5-7B model identifies optimal phrase break positions</li>
-                            <li><strong>Prosody Prediction:</strong> Second model performs regression to predict SSML prosodic parameters (pitch, rate, volume)</li>
-                            <li><strong>SSML Generation:</strong> Enhanced SSML markup is generated with optimized prosodic controls</li>
-                            <li><strong>TTS Synthesis:</strong> Azure TTS processes the enhanced SSML to produce expressive speech</li>
-                        </ol>
-                    </div>
-                    <div class="architecture-image">
-                        <img src="architecture.png" alt="Model Architecture Diagram" class="architecture-diagram">
-                    </div>
-                </div>
+<div class="sec" id="overview">
+  <div class="stag">Research Overview</div>
+  <h2>An end-to-end <em>prosody pipeline</em></h2>
+  <p class="sec-intro">Improving the expressiveness of French TTS through learned SSML markup — from monotonic baseline to human-preferred speech.</p>
+  <div class="overview-grid">
+    <div class="ov-card">
+      <div class="ov-ico"><i class="fas fa-microphone-alt"></i></div>
+      <h3>Problem</h3>
+      <p>French synthetic voices often lack expressiveness due to limited prosody control in commercial TTS systems, resulting in monotonic speech.</p>
+    </div>
+    <div class="ov-card">
+      <div class="ov-ico"><i class="fas fa-brain"></i></div>
+      <h3>Solution</h3>
+      <p>First end-to-end pipeline using cascaded QLoRA-fine-tuned Qwen-2.5-7B models to insert SSML tags for controlling pitch, rate, volume, and pauses in French text.</p>
+    </div>
+    <div class="ov-card">
+      <div class="ov-ico"><i class="fas fa-chart-line"></i></div>
+      <h3>Results</h3>
+      <p>MOS scores rise from 3.20 to 3.87 (p&lt;0.005) and 15 of 18 listeners prefer our enhanced synthesis over the Azure TTS baseline.</p>
+    </div>
+  </div>
+  <iframe allowfullscreen="allowfullscreen" allow="clipboard-write" scrolling="no" class="fp-iframe"
+    src="https://heyzine.com/flip-book/8b56d564fe.html">
+  </iframe>
+</div>
 
-                <!-- Training Pipeline -->
-                <div class="preprocessing-section">
-                    <h3>Training Data Preparation</h3>
-                    <div class="preprocessing-container">
-                        <div class="preprocessing-image">
-                            <img src="PreprocessingPipeline.png" alt="Preprocessing Pipeline" class="preprocessing-diagram">
-                        </div>
-                        <div class="preprocessing-description">
-                            <p>Our models are trained using a comprehensive preprocessing pipeline that extracts prosodic features from a 14-hour French podcast corpus:</p>
-                            <ul class="preprocessing-steps">
-                                <li>Audio segmentation and transcription alignment</li>
-                                <li>Prosodic feature extraction (F0, energy, duration)</li>
-                                <li>Break annotation and prosodic target computation</li>
-                                <li>SSML parameter normalization for commercial TTS compatibility</li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-            </section>
+<div class="div"></div>
 
-            <!-- Audio Demo Section -->
-            <section id="demo" class="section">
-                <h2 class="section-title">Audio Demonstrations</h2>
-                <p class="demo-description">
-                    Compare the difference between standard Azure TTS output and our enhanced version with optimized SSML prosody control.
-                    Each example shows the original text, generated SSML markup, and resulting audio quality improvements.
-                </p>
-                
-                <div class="demo-grid">
-                    <!-- Demo Pair 1 -->
-                    <div class="demo-pair">
-                        <div class="demo-header">
-                            <h3>Demo 1</h3>
-                            <div class="text-sample">"Parmi les habitués du restaurant et donc des soirées à la maison, on comptait énormément de comédiens et de musiciens. La famille allait le plus souvent possible au cinéma et ils se rendaient dès qu'ils le pouvaient au théâtre."</div>
-                        </div>
-                        
-                        <div class="ssml-comparison">
-                            <div class="ssml-item baseline-ssml">
-                                <h4><i class="fas fa-code"></i> Baseline SSML</h4>
-                                <pre class="ssml-code">Parmi les habitués du restaurant et donc des soirées à la maison, on comptait énormément de comédiens et de musiciens. La famille allait le plus souvent possible au cinéma et ils se rendaient dès qu'ils le pouvaient au théâtre.</pre>
-                                <p class="ssml-description">Raw text without prosodic enhancement</p>
-                            </div>
-                            <div class="ssml-item enhanced-ssml">
-                                <h4><i class="fas fa-magic"></i> Enhanced SSML</h4>
-                                <pre class="ssml-code">&lt;speak xmlns="http://www.w3.org/2001/10/synthesis" xmlns:mstts="http://www.w3.org/2001/mstts" version="1.0" xml:lang="fr-FR"&gt;&lt;voice name="fr-FR-HenriNeural"&gt;&lt;mstts:silence type="Leading-exact" value="0"/&gt;&lt;prosody pitch="+3.34%" rate="-0.36%" volume="+10.00%"&gt;&lt;break time="300ms"/&gt;&lt;/prosody&gt;&lt;prosody pitch="+1.65%" rate="-1.07%" volume="-10.00%"&gt;Parmi les habitués du restaurant et donc des soirées à la maison,&lt;/prosody&gt;&lt;prosody pitch="+1.32%" rate="-0.85%" volume="+10.00%"&gt;&lt;break time="580ms"/&gt;&lt;/prosody&gt;&lt;prosody pitch="+2.61%" rate="-1.12%" volume="-2.94%"&gt;on comptait énormément de comédiens et de musiciens.&lt;/prosody&gt;&lt;prosody pitch="+2.09%" rate="-0.90%" volume="+10.00%"&gt;&lt;break time="800ms"/&gt;&lt;/prosody&gt;&lt;prosody pitch="+3.23%" rate="-2.72%" volume="-4.59%"&gt;La famille allait le plus souvent possible au cinéma et ils se rendaient dès qu'ils le pouvaient au théâtre.&lt;/prosody&gt;&lt;prosody pitch="+2.59%" rate="-2.17%" volume="+10.00%"&gt;&lt;break time="500ms"/&gt;&lt;/prosody&gt;&lt;mstts:silence type="Tailing-exact" value="0"/&gt;&lt;/voice&gt;&lt;/speak&gt;</pre>
-                                <p class="ssml-description">AI-generated SSML with optimized prosodic parameters</p>
-                            </div>
-                        </div>
+<div class="sec" id="architecture">
+  <div class="stag">Architecture</div>
+  <h2>Cascaded <em>QLoRA</em> pipeline</h2>
+  <p class="sec-intro">Raw French text → break annotations → SSML markup → expressive speech. Two fine-tuned Qwen-2.5-7B models in a cascaded inference setup.</p>
 
-                        <div class="audio-comparison">
-                            <div class="audio-item baseline">
-                                <h4><i class="fas fa-volume-down"></i> Baseline (Azure TTS)</h4>
-                                <audio controls>
-                                    <source src="audio/Az_1_28_baseline.wav" type="audio/wav">
-                                    Your browser does not support the audio element.
-                                </audio>
-                                <p class="audio-description">Standard TTS without prosodic enhancement</p>
-                            </div>
-                            <div class="audio-item enhanced">
-                                <h4><i class="fas fa-volume-up"></i> Our Method</h4>
-                                <audio controls>
-                                    <source src="audio/Az_1_28_enhanced.wav" type="audio/wav">
-                                    Your browser does not support the audio element.
-                                </audio>
-                                <p class="audio-description">Enhanced with optimized SSML prosody control</p>
-                            </div>
-                        </div>
-                    </div>
+  <div class="arch-wrap">
+    <div class="arch-desc">
+      <h3>Inference Pipeline</h3>
+      <p class="pipeline-intro">During inference, our system transforms raw French text into expressive speech through a cascaded approach:</p>
+      <ol class="pipeline-steps">
+        <li><span class="step-num">01</span><div><strong>Text Input:</strong> Raw French text is processed for linguistic analysis</div></li>
+        <li><span class="step-num">02</span><div><strong>Break Prediction:</strong> First QLoRA-tuned Qwen-2.5-7B model identifies optimal phrase break positions</div></li>
+        <li><span class="step-num">03</span><div><strong>Prosody Prediction:</strong> Second model performs regression to predict SSML prosodic parameters (pitch, rate, volume)</div></li>
+        <li><span class="step-num">04</span><div><strong>SSML Generation:</strong> Enhanced SSML markup is generated with optimized prosodic controls</div></li>
+        <li><span class="step-num">05</span><div><strong>TTS Synthesis:</strong> Azure TTS processes the enhanced SSML to produce expressive speech</div></li>
+      </ol>
+      <div class="chips" style="margin-top:18px">
+        <span class="chip b">Qwen-2.5-7B</span>
+        <span class="chip b">QLoRA ×2</span>
+        <span class="chip g">Azure TTS</span>
+        <span class="chip g">fr-FR-HenriNeural</span>
+        <span class="chip o">14h French corpus</span>
+      </div>
+    </div>
+    <div class="arch-img-box">
+      <img src="architecture.png" alt="Model Architecture Diagram" onerror="this.parentElement.innerHTML='<div class=arch-img-placeholder><span>architecture.png</span></div>'">
+    </div>
+  </div>
 
-                    <!-- Demo Pair 2 -->
-                    <div class="demo-pair">
-                        <div class="demo-header">
-                            <h3>Demo 2</h3>
-                            <div class="text-sample">"Alors évidemment tout cela est beau, cette nécessité de maîtriser les codes de la parole en public,  de surmonter son trac parce que c'est une compétence sociale, tout cela reste maintenant à savoir comment faire  et c'est ce que nous allons voir dans l'épisode suivant."</div>
-                        </div>
-                        
-                        <!-- SSML Comparison -->
-                        <div class="ssml-comparison">
-                            <div class="ssml-item baseline-ssml">
-                                <h4><i class="fas fa-code"></i> Baseline SSML</h4>
-                                <pre class="ssml-code">Alors évidemment tout cela est beau, cette nécessité de maîtriser les codes de la parole en public, de surmonter son trac parce que c'est une compétence sociale, tout cela reste maintenant à savoir comment faire  et c'est ce que nous allons voir dans l'épisode suivant.</pre>
-                                <p class="ssml-description">Raw text without prosodic enhancement</p>
-                            </div>
-                            <div class="ssml-item enhanced-ssml">
-                                <h4><i class="fas fa-magic"></i> Enhanced SSML</h4>
-                                <pre class="ssml-code">&lt;speak xmlns=&quot;http://www.w3.org/2001/10/synthesis&quot; xmlns:mstts=&quot;http://www.w3.org/2001/mstts&quot; version=&quot;1.0&quot; xml:lang=&quot;fr-FR&quot;&gt;&lt;voice name=&quot;fr-FR-HenriNeural&quot;&gt;&lt;mstts:silence type=&quot;Leading-exact&quot; value=&quot;0&quot;/&gt;&lt;prosody pitch=&quot;-0.77%&quot; rate=&quot;-1.78%&quot; volume=&quot;-10.00%&quot;&gt;&lt;break time=&quot;360ms&quot;/&gt;&lt;/prosody&gt;&lt;prosody pitch=&quot;+0.94%&quot; rate=&quot;-1.60%&quot; volume=&quot;-10.00%&quot;&gt;Alors évidemment tout cela est beau,&lt;/prosody&gt;&lt;prosody pitch=&quot;+0.75%&quot; rate=&quot;-1.28%&quot; volume=&quot;-10.00%&quot;&gt;&lt;break time=&quot;100ms&quot;/&gt;&lt;/prosody&gt;&lt;prosody pitch=&quot;+1.65%&quot; rate=&quot;-2.00%&quot; volume=&quot;-10.00%&quot;&gt;cette nécessité de maîtriser les codes de la parole en public,&lt;/prosody&gt;&lt;prosody pitch=&quot;+0.30%&quot; rate=&quot;-1.60%&quot; volume=&quot;-10.00%&quot;&gt;&lt;break time=&quot;80ms&quot;/&gt;&lt;/prosody&gt;&lt;prosody pitch=&quot;-0.78%&quot; rate=&quot;-1.94%&quot; volume=&quot;-10.00%&quot;&gt;de surmonter son trac parce que c'est une compétence sociale,&lt;/prosody&gt;&lt;prosody pitch=&quot;-0.63%&quot; rate=&quot;-1.56%&quot; volume=&quot;-10.00%&quot;&gt;&lt;break time=&quot;340ms&quot;/&gt;&lt;/prosody&gt;&lt;prosody pitch=&quot;-1.53%&quot; rate=&quot;-1.80%&quot; volume=&quot;-10.00%&quot;&gt;tout cela reste maintenant à savoir comment faire&lt;/prosody&gt;&lt;prosody pitch=&quot;-1.22%&quot; rate=&quot;-1.44%&quot; volume=&quot;-10.00%&quot;&gt;&lt;break time=&quot;340ms&quot;/&gt;&lt;/prosody&gt;&lt;prosody pitch=&quot;+0.58%&quot; rate=&quot;-1.41%&quot; volume=&quot;-10.00%&quot;&gt;et c'est ce que nous allons voir dans l'épisode suivant.&lt;/prosody&gt;&lt;prosody pitch=&quot;+0.47%&quot; rate=&quot;-1.13%&quot; volume=&quot;-10.00%&quot;&gt;&lt;break time=&quot;500ms&quot;/&gt;&lt;/prosody&gt;&lt;mstts:silence type=&quot;Tailing-exact&quot; value=&quot;0&quot;/&gt;&lt;/voice&gt;&lt;/speak&gt;</pre>
-                                <p class="ssml-description">AI-generated SSML with optimized prosodic parameters</p>
-                            </div>
-                        </div>
+  <div style="background:var(--card);border:1px solid var(--bs);border-radius:14px;padding:32px">
+    <div class="stag" style="margin-bottom:16px">Training Data Preparation</div>
+    <div class="train-wrap">
+      <div class="arch-img-box" style="background:transparent;border:none;padding:0">
+        <img src="PreprocessingPipeline.png" alt="Preprocessing Pipeline" onerror="this.parentElement.innerHTML='<div class=arch-img-placeholder><span>PreprocessingPipeline.png</span></div>'">
+      </div>
+      <div>
+        <p style="font-size:14px;color:var(--tm);margin-bottom:16px;line-height:1.7">Our models are trained using a comprehensive preprocessing pipeline that extracts prosodic features from a 14-hour French podcast corpus:</p>
+        <ul class="train-steps">
+          <li>Audio segmentation and transcription alignment</li>
+          <li>Prosodic feature extraction (F0, energy, duration)</li>
+          <li>Break annotation and prosodic target computation</li>
+          <li>SSML parameter normalization for commercial TTS compatibility</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
 
-                        <div class="audio-comparison">
-                            <div class="audio-item baseline">
-                                <h4><i class="fas fa-volume-down"></i> Baseline (Azure TTS)</h4>
-                                <audio controls>
-                                    <source src="audio/Be_1_16_baseline.wav" type="audio/wav">
-                                    Your browser does not support the audio element.
-                                </audio>
-                                <p class="audio-description">Standard TTS without prosodic enhancement</p>
-                            </div>
-                            <div class="audio-item enhanced">
-                                <h4><i class="fas fa-volume-up"></i> Our Method</h4>
-                                <audio controls>
-                                    <source src="audio/Be_1_16_enhanced.wav" type="audio/wav">
-                                    Your browser does not support the audio element.
-                                </audio>
-                                <p class="audio-description">Enhanced with optimized SSML prosody control</p>
-                            </div>
-                        </div>
-                    </div>
+<div class="div"></div>
 
-                    <!-- Demo Pair 3 -->
-                    <div class="demo-pair">
-                        <div class="demo-header">
-                            <h3>Demo 3</h3>
-                            <div class="text-sample">"Ils frapperont à Coféville, une petite ville dont il n'y a pas grand-chose à dire, si ce n'est qu'elle est balayée par la poussière, et qu'il y a quand même deux banques, la Fédérale Nationale Banque et la Condon Bank."</div>
-                        </div>
-                        
-                        <div class="ssml-comparison">
-                            <div class="ssml-item baseline-ssml">
-                                <h4><i class="fas fa-code"></i> Baseline SSML</h4>
-                                <pre class="ssml-code">Ils frapperont à Coféville, une petite ville dont il n'y a pas grand-chose à dire, si ce n'est qu'elle est balayée par la poussière, et qu'il y a quand même deux banques, la Fédérale Nationale Banque et la Condon Bank.</pre>
-                                <p class="ssml-description">Raw text without prosodic enhancement</p>
-                            </div>
-                            <div class="ssml-item enhanced-ssml">
-                                <h4><i class="fas fa-magic"></i> Enhanced SSML</h4>
-                                <pre class="ssml-code">&lt;speak xmlns=&quot;http://www.w3.org/2001/10/synthesis&quot; xmlns:mstts=&quot;http://www.w3.org/2001/mstts&quot; version=&quot;1.0&quot; xml:lang=&quot;fr-FR&quot;&gt;&lt;voice name=&quot;fr-FR-HenriNeural&quot;&gt;&lt;mstts:silence type=&quot;Leading-exact&quot; value=&quot;0&quot;/&gt;&lt;prosody pitch=&quot;+1.02%&quot; rate=&quot;-1.15%&quot; volume=&quot;-10.00%&quot;&gt;&lt;break time=&quot;220ms&quot;/&gt;&lt;/prosody&gt;&lt;prosody pitch=&quot;-0.21%&quot; rate=&quot;-1.21%&quot; volume=&quot;-10.00%&quot;&gt;Ils frapperont à Coféville,&lt;/prosody&gt;&lt;prosody pitch=&quot;-0.17%&quot; rate=&quot;-0.97%&quot; volume=&quot;-10.00%&quot;&gt;&lt;break time=&quot;400ms&quot;/&gt;&lt;/prosody&gt;&lt;prosody pitch=&quot;-1.16%&quot; rate=&quot;-1.17%&quot; volume=&quot;-10.00%&quot;&gt;une petite ville dont il n'y a pas grand-chose à dire,&lt;/prosody&gt;&lt;prosody pitch=&quot;-0.93%&quot; rate=&quot;-0.94%&quot; volume=&quot;-10.00%&quot;&gt;&lt;/prosody&gt;&lt;prosody pitch=&quot;-1.24%&quot; rate=&quot;-1.18%&quot; volume=&quot;-10.00%&quot;&gt;si ce n'est qu'elle est balayée par la poussière,&lt;/prosody&gt;&lt;prosody pitch=&quot;-2.01%&quot; rate=&quot;-0.95%&quot; volume=&quot;-10.00%&quot;&gt;&lt;break time=&quot;560ms&quot;/&gt;&lt;/prosody&gt;&lt;prosody pitch=&quot;-2.44%&quot; rate=&quot;-0.85%&quot; volume=&quot;-10.00%&quot;&gt;et qu'il y a quand même deux banques,&lt;/prosody&gt;&lt;prosody pitch=&quot;-1.95%&quot; rate=&quot;-0.68%&quot; volume=&quot;-10.00%&quot;&gt;&lt;break time=&quot;180ms&quot;/&gt;&lt;/prosody&gt;&lt;prosody pitch=&quot;-0.35%&quot; rate=&quot;-2.55%&quot; volume=&quot;-10.00%&quot;&gt;la Fédérale Nationale Banque et la Condon Bank.&lt;/prosody&gt;&lt;prosody pitch=&quot;+1.28%&quot; rate=&quot;-2.04%&quot; volume=&quot;-10.00%&quot;&gt;&lt;break time=&quot;500ms&quot;/&gt;&lt;/prosody&gt;&lt;mstts:silence type=&quot;Tailing-exact&quot; value=&quot;0&quot;/&gt;&lt;/voice&gt;&lt;/speak&gt;</pre>
-                                <p class="ssml-description">AI-generated SSML with optimized prosodic parameters</p>
-                            </div>
-                        </div>
+<div class="sec" id="demo">
+  <div class="stag">Audio Demo</div>
+  <h2>Listen to the <em>reconstruction</em></h2>
+  <p class="sec-intro">Compare standard Azure TTS output against our enhanced version with optimized SSML prosody control. Each example shows the original text, generated SSML markup, and resulting audio.</p>
 
-                        <div class="audio-comparison">
-                            <div class="audio-item baseline">
-                                <h4><i class="fas fa-volume-down"></i> Baseline (Azure TTS)</h4>
-                                <audio controls>
-                                    <source src="audio/MyDal_12_baseline.wav" type="audio/wav">
-                                    Your browser does not support the audio element.
-                                </audio>
-                                <p class="audio-description">Standard TTS without prosodic enhancement</p>
-                            </div>
-                            <div class="audio-item enhanced">
-                                <h4><i class="fas fa-volume-up"></i> Our Method</h4>
-                                <audio controls>
-                                    <source src="audio/MyDal_12_enhanced.wav" type="audio/wav">
-                                    Your browser does not support the audio element.
-                                </audio>
-                                <p class="audio-description">Enhanced with optimized SSML prosody control</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+  <div class="demo-pair">
+    <div class="demo-hdr">
+      <span class="demo-num">Demo 01</span>
+      <p class="demo-text">"Parmi les habitués du restaurant et donc des soirées à la maison, on comptait énormément de comédiens et de musiciens. La famille allait le plus souvent possible au cinéma et ils se rendaient dès qu'ils le pouvaient au théâtre."</p>
+    </div>
+    <div class="ssml-comp">
+      <div class="ssml-col">
+        <div class="ssml-label base"><i class="fas fa-code" style="font-size:9px"></i> Baseline SSML</div>
+        <pre class="ssml-code">Parmi les habitués du restaurant et donc des soirées à la maison, on comptait énormément de comédiens et de musiciens. La famille allait le plus souvent possible au cinéma et ils se rendaient dès qu'ils le pouvaient au théâtre.</pre>
+        <p class="ssml-note">Raw text without prosodic enhancement</p>
+      </div>
+      <div class="ssml-col">
+        <div class="ssml-label enhanced"><i class="fas fa-magic" style="font-size:9px"></i> Enhanced SSML</div>
+        <pre class="ssml-code">&lt;speak xmlns="http://www.w3.org/2001/10/synthesis" xmlns:mstts="http://www.w3.org/2001/mstts" version="1.0" xml:lang="fr-FR"&gt;&lt;voice name="fr-FR-HenriNeural"&gt;&lt;mstts:silence type="Leading-exact" value="0"/&gt;&lt;prosody pitch="+3.34%" rate="-0.36%" volume="+10.00%"&gt;&lt;break time="300ms"/&gt;&lt;/prosody&gt;&lt;prosody pitch="+1.65%" rate="-1.07%" volume="-10.00%"&gt;Parmi les habitués du restaurant et donc des soirées à la maison,&lt;/prosody&gt;&lt;prosody pitch="+1.32%" rate="-0.85%" volume="+10.00%"&gt;&lt;break time="580ms"/&gt;&lt;/prosody&gt;&lt;prosody pitch="+2.61%" rate="-1.12%" volume="-2.94%"&gt;on comptait énormément de comédiens et de musiciens.&lt;/prosody&gt;&lt;prosody pitch="+2.09%" rate="-0.90%" volume="+10.00%"&gt;&lt;break time="800ms"/&gt;&lt;/prosody&gt;&lt;prosody pitch="+3.23%" rate="-2.72%" volume="-4.59%"&gt;La famille allait le plus souvent possible au cinéma et ils se rendaient dès qu'ils le pouvaient au théâtre.&lt;/prosody&gt;&lt;prosody pitch="+2.59%" rate="-2.17%" volume="+10.00%"&gt;&lt;break time="500ms"/&gt;&lt;/prosody&gt;&lt;mstts:silence type="Tailing-exact" value="0"/&gt;&lt;/voice&gt;&lt;/speak&gt;</pre>
+        <p class="ssml-note">AI-generated SSML with optimized prosodic parameters</p>
+      </div>
+    </div>
+    <div class="audio-comp">
+      <div class="audio-col">
+        <div class="audio-label base"><span class="audio-dot"></span> Baseline (Azure TTS)</div>
+        <audio controls><source src="audio/Az_1_28_baseline.wav" type="audio/wav">Your browser does not support the audio element.</audio>
+        <p class="audio-note">Standard TTS without prosodic enhancement</p>
+      </div>
+      <div class="audio-col">
+        <div class="audio-label enhanced"><span class="audio-dot"></span> Our Method</div>
+        <audio controls><source src="audio/Az_1_28_enhanced.wav" type="audio/wav">Your browser does not support the audio element.</audio>
+        <p class="audio-note">Enhanced with optimized SSML prosody control</p>
+      </div>
+    </div>
+  </div>
 
-                <!-- Technical Details -->
-                <div class="technical-details">
-                    <h3>Technical Implementation</h3>
-                    <div class="details-grid">
-                        <div class="detail-item">
-                            <h4>Cascaded QLoRA Architecture</h4>
-                            <p>Two fine-tuned Qwen-2.5-7B models: break prediction (99.2% F1-score) and prosodic regression (25-40% MAE reduction).</p>
-                        </div>
-                        <div class="detail-item">
-                            <h4>French Language Optimization</h4>
-                            <p>Trained on 14-hour French podcast corpus with human-annotated prosodic preferences for natural speech patterns.</p>
-                        </div>
-                        <div class="detail-item">
-                            <h4>Commercial TTS Integration</h4>
-                            <p>Seamless SSML generation compatible with Azure Cognitive Services for high-quality French voice synthesis.</p>
-                        </div>
-                    </div>
-                </div>
-            </section>
-        </div>
-    </main>
+  <div class="demo-pair">
+    <div class="demo-hdr">
+      <span class="demo-num">Demo 02</span>
+      <p class="demo-text">"Alors évidemment tout cela est beau, cette nécessité de maîtriser les codes de la parole en public, de surmonter son trac parce que c'est une compétence sociale, tout cela reste maintenant à savoir comment faire et c'est ce que nous allons voir dans l'épisode suivant."</p>
+    </div>
+    <div class="ssml-comp">
+      <div class="ssml-col">
+        <div class="ssml-label base"><i class="fas fa-code" style="font-size:9px"></i> Baseline SSML</div>
+        <pre class="ssml-code">Alors évidemment tout cela est beau, cette nécessité de maîtriser les codes de la parole en public, de surmonter son trac parce que c'est une compétence sociale, tout cela reste maintenant à savoir comment faire  et c'est ce que nous allons voir dans l'épisode suivant.</pre>
+        <p class="ssml-note">Raw text without prosodic enhancement</p>
+      </div>
+      <div class="ssml-col">
+        <div class="ssml-label enhanced"><i class="fas fa-magic" style="font-size:9px"></i> Enhanced SSML</div>
+        <pre class="ssml-code">&lt;speak xmlns="http://www.w3.org/2001/10/synthesis" xmlns:mstts="http://www.w3.org/2001/mstts" version="1.0" xml:lang="fr-FR"&gt;&lt;voice name="fr-FR-HenriNeural"&gt;&lt;mstts:silence type="Leading-exact" value="0"/&gt;&lt;prosody pitch="-0.77%" rate="-1.78%" volume="-10.00%"&gt;&lt;break time="360ms"/&gt;&lt;/prosody&gt;&lt;prosody pitch="+0.94%" rate="-1.60%" volume="-10.00%"&gt;Alors évidemment tout cela est beau,&lt;/prosody&gt;&lt;prosody pitch="+0.75%" rate="-1.28%" volume="-10.00%"&gt;&lt;break time="100ms"/&gt;&lt;/prosody&gt;&lt;prosody pitch="+1.65%" rate="-2.00%" volume="-10.00%"&gt;cette nécessité de maîtriser les codes de la parole en public,&lt;/prosody&gt;&lt;prosody pitch="+0.30%" rate="-1.60%" volume="-10.00%"&gt;&lt;break time="80ms"/&gt;&lt;/prosody&gt;&lt;prosody pitch="-0.78%" rate="-1.94%" volume="-10.00%"&gt;de surmonter son trac parce que c'est une compétence sociale,&lt;/prosody&gt;&lt;prosody pitch="-0.63%" rate="-1.56%" volume="-10.00%"&gt;&lt;break time="340ms"/&gt;&lt;/prosody&gt;&lt;prosody pitch="-1.53%" rate="-1.80%" volume="-10.00%"&gt;tout cela reste maintenant à savoir comment faire&lt;/prosody&gt;&lt;prosody pitch="-1.22%" rate="-1.44%" volume="-10.00%"&gt;&lt;break time="340ms"/&gt;&lt;/prosody&gt;&lt;prosody pitch="+0.58%" rate="-1.41%" volume="-10.00%"&gt;et c'est ce que nous allons voir dans l'épisode suivant.&lt;/prosody&gt;&lt;prosody pitch="+0.47%" rate="-1.13%" volume="-10.00%"&gt;&lt;break time="500ms"/&gt;&lt;/prosody&gt;&lt;mstts:silence type="Tailing-exact" value="0"/&gt;&lt;/voice&gt;&lt;/speak&gt;</pre>
+        <p class="ssml-note">AI-generated SSML with optimized prosodic parameters</p>
+      </div>
+    </div>
+    <div class="audio-comp">
+      <div class="audio-col">
+        <div class="audio-label base"><span class="audio-dot"></span> Baseline (Azure TTS)</div>
+        <audio controls><source src="audio/Be_1_16_baseline.wav" type="audio/wav">Your browser does not support the audio element.</audio>
+        <p class="audio-note">Standard TTS without prosodic enhancement</p>
+      </div>
+      <div class="audio-col">
+        <div class="audio-label enhanced"><span class="audio-dot"></span> Our Method</div>
+        <audio controls><source src="audio/Be_1_16_enhanced.wav" type="audio/wav">Your browser does not support the audio element.</audio>
+        <p class="audio-note">Enhanced with optimized SSML prosody control</p>
+      </div>
+    </div>
+  </div>
 
-    <!-- Footer -->
-    <footer class="footer">
-        <div class="container">
-            <div class="footer-content">
-                <div class="footer-main">
-                    <p class="authors">
-<strong>Authors:</strong>
-Nassima Ould Ouali<sup>1</sup>,
-Awais Hussain Sani<sup>2</sup>,
-Ruben Bueno<sup>1</sup><sup>†</sup>,
-Jonah Dauvet<sup>1,3</sup><sup>†</sup>,
-<br>
-<strong><a href="https://horstmann.tech/" class="author-highlight">Tim Luka Horstmann</a></strong><sup>1,2</sup><sup>†</sup>,
-<strong><a href="https://en.wikipedia.org/wiki/%C3%89ric_Moulines" class="author-highlight">Eric Moulines</a></strong><sup>1</sup>
-                    </p>
-                    <p class="affiliations">
-  <sup>1</sup> École Polytechnique, France &nbsp;&nbsp;|
-  <sup>2</sup> Hi! PARIS Research Center, France &nbsp;&nbsp;|
-  <sup>3</sup> McGill University, Canada
-</p>
-<p class="affiliations" style="font-size:0.9rem; color:#a0aec0; margin-top:-8px;">
-  <sup>†</sup> Equal contribution; authors listed in alphabetical order.
-</p>
-                    <p class="copyright">&copy; 2025 Research presented at ICNLSP 2025.</p>
-                </div>
-                <div class="footer-links">
-                    <a href="https://github.com/hi-paris/Prosody-Control-French-TTS/tree/main" class="footer-link">
-                        <i class="fab fa-github"></i> GitHub
-                    </a>
-                    <a href="mailto:nassima.ould-ouali@polytechnique.edu" class="footer-link">
-                        <i class="fas fa-envelope"></i> Contact
-                    </a>
-                </div>
-            </div>
-        </div>
-    </footer>
+  <div class="demo-pair">
+    <div class="demo-hdr">
+      <span class="demo-num">Demo 03</span>
+      <p class="demo-text">"Ils frapperont à Coféville, une petite ville dont il n'y a pas grand-chose à dire, si ce n'est qu'elle est balayée par la poussière, et qu'il y a quand même deux banques, la Fédérale Nationale Banque et la Condon Bank."</p>
+    </div>
+    <div class="ssml-comp">
+      <div class="ssml-col">
+        <div class="ssml-label base"><i class="fas fa-code" style="font-size:9px"></i> Baseline SSML</div>
+        <pre class="ssml-code">Ils frapperont à Coféville, une petite ville dont il n'y a pas grand-chose à dire, si ce n'est qu'elle est balayée par la poussière, et qu'il y a quand même deux banques, la Fédérale Nationale Banque et la Condon Bank.</pre>
+        <p class="ssml-note">Raw text without prosodic enhancement</p>
+      </div>
+      <div class="ssml-col">
+        <div class="ssml-label enhanced"><i class="fas fa-magic" style="font-size:9px"></i> Enhanced SSML</div>
+        <pre class="ssml-code">&lt;speak xmlns="http://www.w3.org/2001/10/synthesis" xmlns:mstts="http://www.w3.org/2001/mstts" version="1.0" xml:lang="fr-FR"&gt;&lt;voice name="fr-FR-HenriNeural"&gt;&lt;mstts:silence type="Leading-exact" value="0"/&gt;&lt;prosody pitch="+1.02%" rate="-1.15%" volume="-10.00%"&gt;&lt;break time="220ms"/&gt;&lt;/prosody&gt;&lt;prosody pitch="-0.21%" rate="-1.21%" volume="-10.00%"&gt;Ils frapperont à Coféville,&lt;/prosody&gt;&lt;prosody pitch="-0.17%" rate="-0.97%" volume="-10.00%"&gt;&lt;break time="400ms"/&gt;&lt;/prosody&gt;&lt;prosody pitch="-1.16%" rate="-1.17%" volume="-10.00%"&gt;une petite ville dont il n'y a pas grand-chose à dire,&lt;/prosody&gt;&lt;prosody pitch="-0.93%" rate="-0.94%" volume="-10.00%"&gt;&lt;/prosody&gt;&lt;prosody pitch="-1.24%" rate="-1.18%" volume="-10.00%"&gt;si ce n'est qu'elle est balayée par la poussière,&lt;/prosody&gt;&lt;prosody pitch="-2.01%" rate="-0.95%" volume="-10.00%"&gt;&lt;break time="560ms"/&gt;&lt;/prosody&gt;&lt;prosody pitch="-2.44%" rate="-0.85%" volume="-10.00%"&gt;et qu'il y a quand même deux banques,&lt;/prosody&gt;&lt;prosody pitch="-1.95%" rate="-0.68%" volume="-10.00%"&gt;&lt;break time="180ms"/&gt;&lt;/prosody&gt;&lt;prosody pitch="-0.35%" rate="-2.55%" volume="-10.00%"&gt;la Fédérale Nationale Banque et la Condon Bank.&lt;/prosody&gt;&lt;prosody pitch="+1.28%" rate="-2.04%" volume="-10.00%"&gt;&lt;break time="500ms"/&gt;&lt;/prosody&gt;&lt;mstts:silence type="Tailing-exact" value="0"/&gt;&lt;/voice&gt;&lt;/speak&gt;</pre>
+        <p class="ssml-note">AI-generated SSML with optimized prosodic parameters</p>
+      </div>
+    </div>
+    <div class="audio-comp">
+      <div class="audio-col">
+        <div class="audio-label base"><span class="audio-dot"></span> Baseline (Azure TTS)</div>
+        <audio controls><source src="audio/MyDal_12_baseline.wav" type="audio/wav">Your browser does not support the audio element.</audio>
+        <p class="audio-note">Standard TTS without prosodic enhancement</p>
+      </div>
+      <div class="audio-col">
+        <div class="audio-label enhanced"><span class="audio-dot"></span> Our Method</div>
+        <audio controls><source src="audio/MyDal_12_enhanced.wav" type="audio/wav">Your browser does not support the audio element.</audio>
+        <p class="audio-note">Enhanced with optimized SSML prosody control</p>
+      </div>
+    </div>
+  </div>
 
-    <script src="script.js"></script>
+  <div class="stag" style="margin-top:52px;margin-bottom:14px">Technical Implementation</div>
+  <div class="tech-grid">
+    <div class="tc">
+      <div class="tc-tag">Architecture</div>
+      <h4>Cascaded QLoRA</h4>
+      <p>Two fine-tuned Qwen-2.5-7B models: break prediction (99.2% F1-score) and prosodic regression (25–40% MAE reduction).</p>
+    </div>
+    <div class="tc">
+      <div class="tc-tag">Language</div>
+      <h4>French Optimization</h4>
+      <p>Trained on 14-hour French podcast corpus with human-annotated prosodic preferences for natural speech patterns.</p>
+    </div>
+    <div class="tc">
+      <div class="tc-tag">Integration</div>
+      <h4>Commercial TTS</h4>
+      <p>Seamless SSML generation compatible with Azure Cognitive Services for high-quality French voice synthesis.</p>
+    </div>
+  </div>
+</div>
+
+<div class="div"></div>
+
+<footer>
+  <div class="fl">
+    <h3>SSML Prosody · French TTS</h3>
+    <p>
+      Nassima Ould Ouali<sup>1</sup>, Awais Hussain Sani<sup>2</sup>, Ruben Bueno<sup>1†</sup>, Jonah Dauvet<sup>1,3†</sup>,<br>Tim Luka Horstmann</a><sup>1,2†</sup>,
+      <a href="https://en.wikipedia.org/wiki/%C3%89ric_Moulines" target="_blank">Eric Moulines</a><sup>1</sup>
+    </p>
+    <p style="margin-top:4px;color:var(--td);font-size:11px">
+      <sup>1</sup> École Polytechnique &nbsp;|&nbsp; <sup>2</sup> Hi! PARIS &nbsp;|&nbsp; <sup>3</sup> McGill University<br>
+      <sup>†</sup> Equal contribution · ICNLSP 2025
+    </p>
+    <div class="footer-links" style="margin-top:12px">
+      <a href="https://github.com/hi-paris/Prosody-Control-French-TTS/tree/main" target="_blank"><i class="fab fa-github"></i> GitHub</a>
+      <a href="mailto:nassima.ould-ouali@ip-paris.fr"><i class="fas fa-envelope"></i> Contact</a>
+      <a href="https://arxiv.org/abs/2508.17494v1" target="_blank"><i class="fas fa-file-pdf"></i> ArXiv</a>
+    </div>
+  </div>
+  <div class="fbadges">
+    <span class="fb">Qwen-2.5-7B</span>
+    <span class="fb">QLoRA</span>
+    <span class="fb">Azure TTS</span>
+    <span class="fb">SSML</span>
+    <span class="fb">14h French</span>
+    <span class="fb">ICNLSP 2025</span>
+  </div>
+</footer>
+
 </body>
 </html>
